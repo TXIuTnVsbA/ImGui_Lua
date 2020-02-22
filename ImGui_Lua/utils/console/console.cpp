@@ -26,12 +26,22 @@ bool c_console::allocate(const char* window_name) {
 		//return false;
 	//}
 
+	allocate();
+
+	if (!SetConsoleTitleA(window_name)) {
+		_RPTF1(_CRT_WARN, "Failed to set console title. Error code: %i", GetLastError());
+		return false;
+	}
+	return true;
+}
+
+bool c_console::allocate() {
+#ifdef _DEBUG
 	/*
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONIN$", "r", stdin);
 	freopen("CONERR$", "w", stderr);
 	*/
-
 	_iobuf* out_data;
 	_iobuf* in_data;
 	_iobuf* err_data;
@@ -54,12 +64,10 @@ bool c_console::allocate(const char* window_name) {
 		_RPTF1(_CRT_ERROR, "Failed to open stderr filestream. Error code: %i", err_res);
 		return false;
 	}
-
-	if (!SetConsoleTitleA(window_name)) {
-		_RPTF1(_CRT_WARN, "Failed to set console title. Error code: %i", GetLastError());
-		return false;
-	}
-
+	
+#else
+	setbuf(stdout, out_buf);
+#endif
 	return true;
 }
 
@@ -108,3 +116,4 @@ void c_console::enable_log_file(std::string filename) {
 	if (logFile.is_open())
 		FileLog = true;
 }
+

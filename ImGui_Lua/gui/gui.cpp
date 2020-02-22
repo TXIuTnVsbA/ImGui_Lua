@@ -2,12 +2,19 @@
 #include "imgui\imgui.h"
 #include "imgui\imgui_impl_dx9.h"
 #include "imgui\imgui_impl_win32.h"
+#include "imgui/imgui_internal.h"
 #include <d3d9.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 #include <tchar.h>
 #include "../config/config.h"
+#include "../utils/console/console.h"
 #include "../lua/includes.h"
+
+//constexpr auto windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize
+//| ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse;
+
+constexpr auto windowFlags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize;
 
 // Data
 static LPDIRECT3D9              g_pD3D = NULL;
@@ -86,6 +93,7 @@ void dmt(std::string key) {
 		ImGui::EndTooltip();
 	}
 }
+
 void draw_lua_items(std::string tab, std::string container) {
 	for (auto i : lua::menu_items[tab][container]) {
 		if (!i.is_visible)
@@ -221,11 +229,102 @@ void draw_config_window(bool* isOpened) {
 }
 
 void draw_lua_window(bool* isOpened) {
-	
+	ImGui::SetNextWindowSize({ 290.0f, 190.0f });
+	ImGui::Columns(2, nullptr, false);
+	ImGui::SetColumnOffset(1, 170.0f);
+
+	ImGui::PushItemWidth(500.f);
+	constexpr auto& configItems = lua::scripts;
+	static int currentConfig = -1;
+
+	if (static_cast<size_t>(currentConfig) >= configItems.size())
+		currentConfig = -1;
+
+	static char buffer[16];
+
+	if (ImGui::ListBox("", &currentConfig, [](void* data, int idx, const char** out_text) {
+		auto& vector = *static_cast<std::vector<std::string>*>(data);
+		*out_text = vector[idx].c_str();
+		return true;
+		}, &configItems, configItems.size(), 5) && currentConfig != -1)
+		strcpy(buffer, configItems[currentConfig].c_str());
+
+	ImGui::PopItemWidth();
+	ImGui::NextColumn();
+
+	ImGui::PushItemWidth(100.0f);
+	if (ImGui::Button("Refresh", { 100.0f, 25.0f }))
+	{
+		lua::unload_all_scripts();
+		lua::refresh_scripts();
+		lua::load_script(lua::get_script_id("autorun.lua"));
+	}
+
+	if (ImGui::Button("Reload All", { 100.0f, 25.0f }))
+		lua::reload_all_scripts();
+
+	if (ImGui::Button("Unload All", { 100.0f, 25.0f }))
+		lua::unload_all_scripts();
+
+	if (currentConfig != -1) {
+		if (lua::loaded[currentConfig])
+		{
+			if (ImGui::Button("Unload selected", { 100.0f, 25.0f }))
+			{
+				lua::unload_script(currentConfig);
+			}
+		}
+		else {
+			if (ImGui::Button("Load selected", { 100.0f, 25.0f }))
+			{
+				lua::load_script(currentConfig);
+			}
+		}
+		
+	}
+	ImGui::PopItemWidth();
 }
 
 void draw_console_window(bool* isOpened) {
-	
+	char InputBuf[512] = {};
+	ImGui::PushID(0);
+	if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), ImGuiInputTextFlags_EnterReturnsTrue)) {
+		try
+		{
+			bool tmp = luaL_dostring(lua::g_lua_state, InputBuf);
+			if (tmp) {
+				std::printf("lua::Error: %s\n", lua_tostring(lua::g_lua_state, -1));
+			}
+		}
+		catch (const std::exception & Error)
+		{
+			std::printf("std::Error: %s\n", Error.what());
+			//std::printf("lua::Error: %s\n", lua_tostring(g_lua_state, 0));
+			//g_console.log("std::Error: %s", Error.what());
+			//g_console.log("lua::Error: %s", lua_tostring(g_lua_state, 0));
+		}
+	}
+	ImGui::PopID();
+
+	std::string OutputBuffer;
+	if (OutputBuffer.size() >= OutputBuffer.max_size() - 1) {
+		OutputBuffer.clear();
+	}
+	if (sizeof(g_console.out_buf) >= BLOCK_SIZE - 1) {
+		g_console.out_buf[BLOCK_SIZE] = {};
+	}
+	for (int i = 0; i < BLOCK_SIZE; i++) {
+		if (g_console.out_buf[i] != '\0') {
+			OutputBuffer.append(1, g_console.out_buf[i]);
+		}
+		else {
+			break;
+		}
+	}
+	ImGui::PushID(1);
+	ImGui::TextUnformatted(OutputBuffer.c_str());
+	ImGui::PopID();
+
 }
 
 void draw_lua_items_window() {
@@ -242,7 +341,8 @@ void draw_lua_items_window() {
 			continue;
 		}
 
-		ImGui::Begin(tab_name_str, window);
+		ImGui::Begin(tab_name_str, window, windowFlags);
+
 		if (tab_name == "Config")
 			draw_config_window(window);
 		else if (tab_name == "Lua")
@@ -250,6 +350,9 @@ void draw_lua_items_window() {
 		else if (tab_name == "Console")
 			draw_console_window(window);
 
+		float w = GET_FLOATS_MAP[g_config.gui.w][tab_name];
+		float h = GET_FLOATS_MAP[g_config.gui.h][tab_name];
+		ImGui::SetWindowSize(ImVec2(w, h));
 
 		int container_count = GET_INTS_MAP[g_config.gui.container_count][tab_name];
 		if (container_count > 0) {
@@ -264,6 +367,7 @@ void draw_lua_items_window() {
 
 void draw() {
 	// 1. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+	/*
 	{
 		static float f = 0.0f;
 		static int counter = 0;
@@ -289,6 +393,15 @@ void draw() {
 		ImGui::End();
 	}
 
+	*/
+	if (ImGui::BeginMainMenuBar()) {
+		for (auto tab : GET_STRINGS[g_config.gui.tab_name]) {
+			auto tab_name = tab.second.c_str();
+			//ImGui::Checkbox(tab_name, &(GET_BOOLS_MAP[g_config.gui.tab_bool][tab_name]));
+			ImGui::MenuItem(tab_name, nullptr, &(GET_BOOLS_MAP[g_config.gui.tab_bool][tab_name]));
+		}
+		ImGui::EndMainMenuBar();
+	}
 	// 2.draw_other
 	draw_lua_items_window();
 }

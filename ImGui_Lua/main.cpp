@@ -8,6 +8,7 @@
 #include "gui/gui.h"
 
 void init() {
+#ifdef _DEBUG
 	if (!g_console.allocate("Debug"))
 		std::abort();
 
@@ -16,6 +17,10 @@ void init() {
 	// redirect warnings to a window similar to errors.
 	_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_WNDW);
 
+#else
+	g_console.allocate();
+	FreeConsole();
+#endif
 	lua::init_state();
 
 	g_config.init();
@@ -23,7 +28,9 @@ void init() {
 
 	if (!g_gui.init())
 	{
+#ifdef _DEBUG
 		g_console.log("Error_Gui_Init");
+#endif
 		std::abort();
 	}
 
@@ -43,8 +50,18 @@ void load() {
 	}
 }
 void wait() {
+#ifdef _DEBUG
 	g_console.log("WAIT");
 	lua::init_console();
+#else
+	while (!lua::g_unload_flag)
+	{
+		if (KEYDOWN(VK_END)) {
+			lua::g_unload_flag = true;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
+#endif
 }
 void unload() {
 	for (auto hk : lua::hooks->getHooks("on_unload"))
@@ -58,8 +75,11 @@ void unload() {
 
 		}
 	}
+#ifdef _DEBUG
 	g_console.log("UNLOAD");
 	g_console.detach();
+#else
+#endif
 }
 
 int main()
@@ -80,7 +100,11 @@ int main()
 	}
 	catch (const std::exception&)
 	{
+#ifdef _DEBUG
+		g_console.log("ERROR");
 		g_console.detach();
+#else
+#endif
 	}
     return TRUE;
 }

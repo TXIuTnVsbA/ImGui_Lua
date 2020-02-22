@@ -432,23 +432,29 @@ void c_config::rename(size_t item, const char* newName) noexcept
 
 void c_config::default() noexcept {
     //default
-    GET_FLOAT[gui.w] = 500.f;
-    GET_FLOAT[gui.h] = 500.f;
-
+  
     GET_STRINGS[gui.tab_name][0] = "Demo";
     GET_BOOLS_MAP[gui.tab_bool]["Demo"] = false;
+    GET_FLOATS_MAP[gui.w]["Demo"] = 500.f;
+    GET_FLOATS_MAP[gui.h]["Demo"] = 500.f;
     GET_INTS_MAP[gui.container_count]["Demo"] = 1;
 
     GET_STRINGS[gui.tab_name][1] = "Config";
 	GET_BOOLS_MAP[gui.tab_bool]["Config"] = false;
+    GET_FLOATS_MAP[gui.w]["Config"] = 500.f;
+    GET_FLOATS_MAP[gui.h]["Config"] = 500.f;
     GET_INTS_MAP[gui.container_count]["Config"] = 1;
 
     GET_STRINGS[gui.tab_name][2] = "Lua";
     GET_BOOLS_MAP[gui.tab_bool]["Lua"] = false;
+    GET_FLOATS_MAP[gui.w]["Lua"] = 500.f;
+    GET_FLOATS_MAP[gui.h]["Lua"] = 500.f;
     GET_INTS_MAP[gui.container_count]["Lua"] = 1;
 
     GET_STRINGS[gui.tab_name][3] = "Console";
     GET_BOOLS_MAP[gui.tab_bool]["Console"] = false;
+    GET_FLOATS_MAP[gui.w]["Console"] = 500.f;
+    GET_FLOATS_MAP[gui.h]["Console"] = 500.f;
     GET_INTS_MAP[gui.container_count]["Console"] = 1;
 
 }

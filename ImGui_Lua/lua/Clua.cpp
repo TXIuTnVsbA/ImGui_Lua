@@ -318,8 +318,10 @@ namespace lua {
 	}
 
 	void init_state() {
+#ifdef _DEBUG
 		lua_writestring(LUA_COPYRIGHT, strlen(LUA_COPYRIGHT));
 		lua_writeline();
+#endif
 		lua::unload();
 		g_lua_state = luaL_newstate();
 		luaL_openlibs(g_lua_state);
@@ -500,7 +502,7 @@ namespace lua {
 				bool didPut = false;
 				int oldScriptsSize = 0;
 				oldScriptsSize = oldScripts.size();
-				if (oldScriptsSize <= 0)
+				if (oldScriptsSize < 0)
 					continue;
 
 				for (int i = 0; i < oldScriptsSize; i++) {
