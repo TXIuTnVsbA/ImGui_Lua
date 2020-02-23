@@ -24,7 +24,7 @@
       <UniqueIdentifier>{0422264f-28a6-4558-9b41-004950d0f55b}</UniqueIdentifier>
     </Filter>
     <Filter Include="sources\gui\imgui">
-      <UniqueIdentifier>{3ca9923b-8acb-4fd9-9465-27ec87c682a4}</UniqueIdentifier>
+      <UniqueIdentifier>{64e62efe-12c2-44b5-95e1-4ed6af612762}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +39,12 @@
     </ClCompile>
     <ClCompile Include="config\config.cpp">
       <Filter>sources\config</Filter>
+    </ClCompile>
+    <ClCompile Include="gui\gui.cpp">
+      <Filter>sources\gui</Filter>
+    </ClCompile>
+    <ClCompile Include="lua\Clua.cpp">
+      <Filter>sources\lua</Filter>
     </ClCompile>
     <ClCompile Include="gui\imgui\imgui.cpp">
       <Filter>sources\gui\imgui</Filter>
@@ -61,15 +67,6 @@
     <ClCompile Include="gui\imgui\imgui_widgets.cpp">
       <Filter>sources\gui\imgui</Filter>
     </ClCompile>
-    <ClCompile Include="gui\gui.cpp">
-      <Filter>sources\gui</Filter>
-    </ClCompile>
-    <ClCompile Include="lua\Clua.cpp">
-      <Filter>sources\lua</Filter>
-    </ClCompile>
-    <ClCompile Include="lua\CLuaHook.cpp">
-      <Filter>sources\lua</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils\KeyState.h">
@@ -86,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="config\config.h">
       <Filter>sources\config</Filter>
+    </ClInclude>
+    <ClInclude Include="gui\gui.h">
+      <Filter>sources\gui</Filter>
+    </ClInclude>
+    <ClInclude Include="lua\Clua.h">
+      <Filter>sources\lua</Filter>
     </ClInclude>
     <ClInclude Include="gui\imgui\imconfig.h">
       <Filter>sources\gui\imgui</Filter>
@@ -113,21 +116,6 @@
     </ClInclude>
     <ClInclude Include="gui\imgui\imstb_truetype.h">
       <Filter>sources\gui\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="gui\gui.h">
-      <Filter>sources\gui</Filter>
-    </ClInclude>
-    <ClInclude Include="lua\Clua.h">
-      <Filter>sources\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua\CLuaHook.h">
-      <Filter>sources\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua\includes.h">
-      <Filter>sources\lua</Filter>
-    </ClInclude>
-    <ClInclude Include="lua\sol.hpp">
-      <Filter>sources\lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

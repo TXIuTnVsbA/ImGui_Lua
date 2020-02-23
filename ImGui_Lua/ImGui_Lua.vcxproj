@@ -174,7 +174,6 @@
     <ClCompile Include="gui\imgui\imgui_stdlib.cpp" />
     <ClCompile Include="gui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lua\Clua.cpp" />
-    <ClCompile Include="lua\CLuaHook.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="utils\console\console.cpp" />
     <ClCompile Include="utils\json\jsoncpp.cpp" />
@@ -192,9 +191,6 @@
     <ClInclude Include="gui\imgui\imstb_textedit.h" />
     <ClInclude Include="gui\imgui\imstb_truetype.h" />
     <ClInclude Include="lua\Clua.h" />
-    <ClInclude Include="lua\CLuaHook.h" />
-    <ClInclude Include="lua\includes.h" />
-    <ClInclude Include="lua\sol.hpp" />
     <ClInclude Include="utils\console\console.h" />
     <ClInclude Include="utils\json\json-forwards.h" />
     <ClInclude Include="utils\json\json.h" />

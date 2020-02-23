@@ -6,6 +6,7 @@
 #include <time.h>
 #include <fstream>
 #include <iostream>
+#define BLOCK_SIZE 1024
 // Colors for the console
 //Define extra colours
 #define FOREGROUND_WHITE		    (FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN)
@@ -24,7 +25,9 @@
 class c_console
 {
 public:
+	char out_buf[BLOCK_SIZE] = { 0 };
 	bool allocate(const char* window_name);
+	bool allocate();
 	void detach();
 	void set_console_color(WORD color);
 	void log(const char* fmt, ...);

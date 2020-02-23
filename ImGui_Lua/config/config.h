@@ -28,7 +28,6 @@ public:
     void rename(size_t, const char*) noexcept;
     void default() noexcept;
     void reset() noexcept;
-    void refresh() noexcept;
 
     constexpr auto& getConfigs() noexcept
     {

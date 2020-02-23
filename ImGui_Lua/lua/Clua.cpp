@@ -4,6 +4,15 @@
 #include "../utils/console/console.h"
 #include "../utils/KeyState.h"
 #include "../config/config.h"
+
+#include <d3d9.h>
+#include "../gui/imgui/imgui.h"
+#include "../gui/imgui/imgui_impl_dx9.h"
+#include "../gui/imgui/imgui_impl_win32.h"
+#include "../gui/imgui/imgui_internal.h"
+#define M(x,y) {##x[#y] = ns_##x::##y;}
+#define N(x,y) {##x[#y] = ##y;}
+
 namespace lua {
 	bool g_unload_flag = false;
 	lua_State* g_lua_state = NULL;
@@ -176,139 +185,325 @@ namespace lua {
 
 		}
 
-		/*
-		config.load()
-		Loads selected config
-		*/
 		void load(size_t id) {
 			g_config.load(id);
 		}
 
-		/*
-		config.save()
-		Saves selected config
-		*/
 		void save(size_t id) {
 			g_config.save(id);
 		}
-	};
 
-	namespace ns_ui {
-		std::string new_checkbox(sol::this_state s, std::string tab, std::string container, std::string label, std::string key, std::optional<bool> def, std::optional<sol::function> cb) {
-			MenuItem_t item;
-			item.type = MENUITEM_CHECKBOX;
-			item.script = extract_owner(s);
-			item.label = label;
-			item.key = key;
-			item.b_default = def.value_or(false);
-			item.callback = cb.value_or(sol::nil);
-
-			menu_items[tab][container].push_back(item);
-			return key;
+		void add(std::string name) {
+			g_config.add(name.c_str());
 		}
 
-		std::string new_slider_int(sol::this_state s, std::string tab, std::string container, std::string label, std::string key, int min, int max, std::optional<std::string> format, std::optional<int> def, std::optional<sol::function> cb) {
-			MenuItem_t item;
-			item.type = MENUITEM_SLIDERINT;
-			item.script = extract_owner(s);
-			item.label = label;
-			item.key = key;
-			item.i_default = def.value_or(0);
-			item.i_min = min;
-			item.i_max = max;
-			item.format = format.value_or("%d");
-			item.callback = cb.value_or(sol::nil);
-
-			menu_items[tab][container].push_back(item);
-			return key;
+		void remove(size_t id) {
+			g_config.remove(id);
 		}
 
-		std::string new_slider_float(sol::this_state s, std::string tab, std::string container, std::string label, std::string key, float min, float max, std::optional<std::string> format, std::optional<float> def, std::optional<sol::function> cb) {
-			MenuItem_t item;
-			item.type = MENUITEM_SLIDERFLOAT;
-			item.script = extract_owner(s);
-			item.label = label;
-			item.key = key;
-			item.f_default = def.value_or(0.f);
-			item.f_min = min;
-			item.f_max = max;
-			item.format = format.value_or("%.0f");
-			item.callback = cb.value_or(sol::nil);
-
-			menu_items[tab][container].push_back(item);
-			return key;
+		void rename(size_t id, std::string name) {
+			g_config.rename(id, name.c_str());
 		}
 
-		std::string new_text(sol::this_state s, std::string tab, std::string container, std::string label, std::string key) {
-			MenuItem_t item;
-			item.type = MENUITEM_TEXT;
-			item.script = extract_owner(s);
-			item.label = label;
-			item.key = key;
-
-			menu_items[tab][container].push_back(item);
-			return key;
+		void reset() {
+			g_config.reset();
 		}
 
-		std::string new_colorpicker(sol::this_state s, std::string tab, std::string container, std::string id, std::string key, std::optional<int> r, std::optional<int> g, std::optional<int> b, std::optional<int> a, std::optional<sol::function> cb) {
-			MenuItem_t item;
-			item.type = MENUITEM_COLORPICKER;
-			item.script = extract_owner(s);
-			item.label = id;
-			item.key = key;
-			item.c_default[0] = r.value_or(255) / 255.f;
-			item.c_default[1] = g.value_or(255) / 255.f;
-			item.c_default[2] = b.value_or(255) / 255.f;
-			item.c_default[3] = a.value_or(255) / 255.f;
-			item.callback = cb.value_or(sol::nil);
-
-			menu_items[tab][container].push_back(item);
-			return key;
+		void init() {
+			g_config.init();
 		}
 
-		std::string new_button(sol::this_state s, std::string tab, std::string container, std::string id, std::string key, std::optional<sol::function> cb) {
-			MenuItem_t item;
-			item.type = MENUITEM_BUTTON;
-			item.script = extract_owner(s);
-			item.label = id;
-			item.key = key;
-			item.callback = cb.value_or(sol::nil);
-
-			menu_items[tab][container].push_back(item);
-			return key;
-		}
-
-		void set_visibility(std::string key, bool v) {
-			for (auto t : menu_items) {
-				for (auto c : t.second) {
-					for (auto& i : c.second) {
-						if (i.key == key)
-							i.is_visible = v;
-					}
-				}
+		sol::object configs(sol::this_state this_) {
+			auto configs = g_config.getConfigs();
+			if (!configs.empty())
+			{
+				return sol::make_object(this_, configs);
 			}
-		}
-
-		void set_items(std::string key, std::vector<const char*> items) {
-			for (auto t : menu_items) {
-				for (auto c : t.second) {
-					for (auto& i : c.second) {
-						if (i.key == key)
-							i.items = items;
-					}
-				}
+			else {
+				return sol::nil;
 			}
 		}
 
 	};
 
-	void test_func() {
+	namespace ns_log {
+		void enable_log_file(std::string filename) {
+			g_console.enable_log_file(filename);
+		}
+	};
+
+	namespace ns_imgui {
+		// window
+		bool begin_window1(std::string name) {
+			return ImGui::Begin(name.c_str());
+		}
+		bool begin_window2(std::string name, std::string field_from_config) {
+			return ImGui::Begin(name.c_str(), &(GET_BOOL[field_from_config]));
+		}
+		bool begin_window3(std::string name, std::string field_from_config, int flag) {
+			return ImGui::Begin(name.c_str(), &(GET_BOOL[field_from_config]), flag);
+		}
+		void end_window() {
+			ImGui::End();
+		}
+
+		bool begin_child1(int id) {
+			return ImGui::BeginChild(id);
+		}
+		bool begin_child2(std::string id) {
+			return ImGui::BeginChild(id.c_str());
+		}
+		bool begin_child3(int id, float x, float y) {
+			return ImGui::BeginChild(id, ImVec2(x, y));
+		}
+		bool begin_child4(std::string id, float x, float y) {
+			return ImGui::BeginChild(id.c_str(), ImVec2(x, y));
+		}
+		bool begin_child5(int id, float x, float y, bool border) {
+			return ImGui::BeginChild(id, ImVec2(x, y), border);
+		}
+		bool begin_child6(std::string id, float x, float y, bool border) {
+			return ImGui::BeginChild(id.c_str(), ImVec2(x, y), border);
+		}
+		bool begin_child7(int id, float x, float y, bool border, int flag) {
+			return ImGui::BeginChild(id, ImVec2(x, y), border, flag);
+		}
+		bool begin_child8(std::string id, float x, float y, bool border, int flag) {
+			return ImGui::BeginChild(id.c_str(), ImVec2(x, y), border, flag);
+		}
+		void end_child() {
+			ImGui::EndChild();
+		}
+
+		void set_window_pos1(float x, float y) {
+			ImGui::SetWindowPos(ImVec2(x, y));
+		}
+		void set_window_pos2(float x, float y, int cond) {
+			ImGui::SetWindowPos(ImVec2(x, y), cond);
+		}
+		void set_window_size1(float x, float y) {
+			ImGui::SetWindowSize(ImVec2(x, y));
+		}
+		void set_window_size2(float x, float y, int cond) {
+			ImGui::SetWindowSize(ImVec2(x, y), cond);
+		}
+		void set_window_focus1() {
+			ImGui::SetWindowFocus();
+		}
+		void set_window_focus2(std::string name) {
+			ImGui::SetWindowFocus(name.c_str());
+		}
+		void set_window_collapsed1(bool collapsed) {
+			ImGui::SetWindowCollapsed(collapsed);
+		}
+		void set_window_collapsed2(bool collapsed, int cond) {
+			ImGui::SetWindowCollapsed(collapsed, cond);
+		}
+		void set_window_collapsed3(std::string name, bool collapsed, int cond) {
+			ImGui::SetWindowCollapsed(name.c_str(), collapsed, cond);
+		}
+		void set_next_window_pos1(float pos_x, float pos_y) {
+			ImGui::SetNextWindowPos(ImVec2(pos_x, pos_y));
+		}
+		void set_next_window_pos2(float pos_x, float pos_y, int cond) {
+			ImGui::SetNextWindowPos(ImVec2(pos_x, pos_y), cond);
+		}
+		void set_next_window_pos3(float pos_x, float pos_y, int cond, float pivot_x, float pivot_y) {
+			ImGui::SetNextWindowPos(ImVec2(pos_x, pos_y), cond, ImVec2(pivot_x, pivot_y));
+		}
+		void set_next_window_content_size(float x, float y) {
+			ImGui::SetNextWindowContentSize(ImVec2(x, y));
+
+		}
+		void set_next_window_size1(float x, float y) {
+			ImGui::SetNextWindowSize(ImVec2(x, y));
+		}
+		void set_next_window_size2(float x, float y, int cond) {
+			ImGui::SetNextWindowSize(ImVec2(x, y), cond);
+		}
+		void set_next_window_size_constraints(float min_x, float min_y, float max_x, float max_y) {
+			ImGui::SetNextWindowSizeConstraints(ImVec2(min_x, min_y), ImVec2(max_x, max_y));
+		}
+		void set_next_window_collapsed1(bool collapsed) {
+			ImGui::SetNextWindowCollapsed(collapsed);
+		}
+		void set_next_window_collapsed2(bool collapsed, int cond) {
+			ImGui::SetNextWindowCollapsed(collapsed, cond);
+		}
+		void set_next_window_focus() {
+			ImGui::SetNextWindowFocus();
+		}
+		void set_next_window_bg_alpha(float alpha) {
+			ImGui::SetNextWindowBgAlpha(alpha);
+		}
+
+		// Cursor / Layout
+		void begin_group() {
+			ImGui::BeginGroup();
+		}
+		void end_group() {
+			ImGui::EndGroup();
+		}
+		void separator() {
+			ImGui::Separator();
+		}
+		void same_line1() {
+			ImGui::SameLine();
+		}
+		void same_line2(float pos_x) {
+			ImGui::SameLine(pos_x);
+		}
+		void same_line3(float pos_x, float spacing_w) {
+			ImGui::SameLine(pos_x, spacing_w);
+		}
+		void spacing() {
+			ImGui::Spacing();
+		}
+		void dummy(float x, float y) {
+			ImGui::Dummy(ImVec2(x, y));
+		}
+		void indent1() {
+			ImGui::Indent();
+		}
+		void indent2(float w) {
+			ImGui::Indent(w);
+		}
+		void unident1() {
+			ImGui::Unindent();
+		}
+		void unident2(float w) {
+			ImGui::Unindent(w);
+		}
+		ImVec2 get_cursor_pos() {
+			return ImGui::GetCursorPos();
+		}
+		ImVec2 get_cursor_screen_pos() {
+			return ImGui::GetCursorScreenPos();
+		}
+
+		// Widgets
+		void text(std::string str) {
+			ImGui::Text(str.c_str());
+		}
+		void text_colored(std::string str, float x, float y, float z, float w) {
+			ImGui::TextColored(ImVec4(x, y, z, w), str.c_str());
+		}
+		void text_disabled(std::string str) {
+			ImGui::TextDisabled(str.c_str());
+		}
+		void text_wrapped(std::string str) {
+			ImGui::TextWrapped(str.c_str());
+		}
+		void label_text(std::string lable, std::string str) {
+			ImGui::LabelText(lable.c_str(), str.c_str());
+		}
+		void bullet() {
+			ImGui::Bullet();
+		}
+		void bullet_text(std::string str) {
+			ImGui::BulletText(str.c_str());
+		}
+		bool button1(std::string lable) {
+			return ImGui::Button(lable.c_str());
+		}
+		bool button2(std::string lable, float x, float y) {
+			return ImGui::Button(lable.c_str(), ImVec2(x, y));
+		}
+		bool small_button(std::string lable) {
+			return ImGui::SmallButton(lable.c_str());
+		}
+		bool color_button1(std::string desc_id, float x, float y, float z, float w) {
+			ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w));
+		}
+		bool color_button2(std::string desc_id, float x, float y, float z, float w, int flag) {
+			ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w), flag);
+		}
+		bool color_button3(std::string desc_id, float x, float y, float z, float w, int flag, float x1, float y1) {
+			ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w), flag, ImVec2(x1, y1));
+		}
+		bool collapsing_header1(std::string lable) {
+			return ImGui::CollapsingHeader(lable.c_str());
+		}
+		bool collapsing_header2(std::string lable, std::string field_from_config) {
+			return ImGui::CollapsingHeader(lable.c_str(), &(GET_BOOL[field_from_config]));
+		}
+		bool collapsing_header3(std::string lable, std::string field_from_config, int flags) {
+			return ImGui::CollapsingHeader(lable.c_str(), &(GET_BOOL[field_from_config]), flags);
+		}
+		bool checkbox(std::string lable, std::string field_from_config) {
+			return ImGui::Checkbox(lable.c_str(), &(GET_BOOL[field_from_config]));
+		}
+		bool radio_button1(std::string lable, bool active) {
+			return ImGui::RadioButton(lable.c_str(), active);
+		}
+		bool radio_button2(std::string lable, std::string field_from_config, int v_button) {
+			return ImGui::RadioButton(lable.c_str(), &(GET_INT[field_from_config]), v_button);
+		}
+		bool combo1(std::string lable, std::string field_from_config, std::string items) {
+			return ImGui::Combo(lable.c_str(), &(GET_INT[field_from_config]), items.c_str());
+		}
+		bool combo2(std::string lable, std::string field_from_config, std::string items, int _t) {
+			return ImGui::Combo(lable.c_str(), &(GET_INT[field_from_config]), items.c_str(), _t);
+		}
+
+		// Menus
+		bool begin_main_menu_bar() {
+			return ImGui::BeginMainMenuBar();
+		}
+		void end_main_menu_bar() {
+			ImGui::EndMainMenuBar();
+		}
+		bool begin_menu_bar() {
+			return ImGui::BeginMenuBar();
+		}
+		void end_menu_bar() {
+			ImGui::EndMenuBar();
+		}
+		bool begin_menu1(std::string label) {
+			return ImGui::BeginMenu(label.c_str());
+		}
+		bool begin_menu2(std::string label, bool enabled) {
+			return ImGui::BeginMenu(label.c_str(), enabled);
+		}
+		void end_menu() {
+			ImGui::EndMenu();
+		}
+		bool menu_item1(std::string label) {
+			return ImGui::MenuItem(label.c_str());
+		}
+		bool menu_item2(std::string label, std::string shortcut) {
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str());
+		}
+		bool menu_item3(std::string label, std::string shortcut, bool selected) {
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected);
+		}
+		bool menu_item4(std::string label, std::string shortcut, bool selected, bool enabled) {
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), selected, enabled);
+		}
+		bool menu_item5(std::string label, std::string shortcut, std::string field_from_config) {
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), &(GET_BOOL[field_from_config]));
+		}
+		bool menu_item6(std::string label, std::string shortcut, std::string field_from_config, bool enabled) {
+			return ImGui::MenuItem(label.c_str(), shortcut.c_str(), &(GET_BOOL[field_from_config]), enabled);
+		}
+
+		// Widgets: Drags
+		// Widgets: Input with Keyboard
+		// Widgets: Sliders
+		// ID scopes
+	};
+
+	void test() {
 		g_console.log("RunTestFunc");
 		for (auto hk : hooks->getHooks("on_test"))
 		{
 			try
 			{
-				hk.func();
+				auto result = hk.func();
+				if (!result.valid()) {
+					sol::error err = result;
+					g_console.log(err.what());
+				}
 			}
 			catch (const std::exception&)
 			{
@@ -318,10 +513,8 @@ namespace lua {
 	}
 
 	void init_state() {
-#ifdef _DEBUG
 		lua_writestring(LUA_COPYRIGHT, strlen(LUA_COPYRIGHT));
 		lua_writeline();
-#endif
 		lua::unload();
 		g_lua_state = luaL_newstate();
 		luaL_openlibs(g_lua_state);
@@ -330,10 +523,21 @@ namespace lua {
 	void init_command() {
 		sol::state_view lua_state(g_lua_state);
 		lua_state["exit"] = []() { g_unload_flag = true; };
-		lua_state["test_func"] = []() { test_func(); };
-
+		lua_state["test"] = []() { test(); };
+		lua_state.new_usertype<ImVec2>("c_vec2",
+			sol::constructors <ImVec2(), ImVec2(float, float)>(),
+			"x", &ImVec2::x,
+			"y", &ImVec2::y
+			);
+		lua_state.new_usertype<ImVec4>("c_vec4",
+			sol::constructors <ImVec4(), ImVec4(float, float, float, float)>(),
+			"x", &ImVec4::x,
+			"y", &ImVec4::y,
+			"z", &ImVec4::z,
+			"w", &ImVec4::w
+			);
 		auto config = lua_state.create_table();
-		config["get"] = ns_config::get;
+		M(config, get);
 		config["set"] = sol::overload(
 			ns_config::set_bool,
 			ns_config::set_color,
@@ -346,33 +550,156 @@ namespace lua {
 			ns_config::set_number_map,
 			ns_config::set_string_map
 		);
-		config["save"] = ns_config::save;
-		config["load"] = ns_config::load;
-		lua_state["config"] = config;
+		M(config, init);
+		M(config, save);
+		M(config, load);
+		M(config, reset);
+		M(config, add);
+		M(config, remove);
+		M(config, rename);
+		M(config, configs);
+		N(lua_state, config);
 
 		auto client = lua_state.create_table();
-		client["set_event_callback"] = ns_client::set_event_callback;
-		client["run_script"] = ns_client::run_script;
-		client["reload_active_scripts"] = ns_client::reload_active_scripts;
-		client["refresh"] = ns_client::refresh;
-		lua_state["client"] = client;
+		M(client, set_event_callback);
+		M(client, run_script);
+		M(client, reload_active_scripts);
+		M(client, refresh);
+		N(lua_state, client);
 
-		auto ui = lua_state.create_table();
-		ui["new_checkbox"] = ns_ui::new_checkbox;
-		ui["new_colorpicker"] = ns_ui::new_colorpicker;
-		//ui["new_keybind"] = ns_ui::new_keybind;
-		//ui["new_multiselect"] = ns_ui::new_multiselect;
-		//ui["new_singleselect"] = ns_ui::new_singleselect;
-		ui["new_slider_float"] = ns_ui::new_slider_float;
-		ui["new_slider_int"] = ns_ui::new_slider_int;
-		ui["new_text"] = ns_ui::new_text;
-		ui["new_button"] = ns_ui::new_button;
-		//ui["set_callback"] = ns_ui::set_callback;
-		ui["set_items"] = ns_ui::set_items;
-		//ui["set_label"] = ns_ui::set_label;
-		ui["set_visibility"] = ns_ui::set_visibility;
-		//ui["is_bind_active"] = ns_ui::is_bind_active;
-		lua_state["ui"] = ui;
+		auto imgui = lua_state.create_table();
+
+		// window
+		imgui["begin_window"] = sol::overload(
+			ns_imgui::begin_window1,
+			ns_imgui::begin_window2,
+			ns_imgui::begin_window3
+		);
+		M(imgui, end_window);
+		imgui["begin_child"] = sol::overload(
+			ns_imgui::begin_child1,
+			ns_imgui::begin_child2,
+			ns_imgui::begin_child3,
+			ns_imgui::begin_child4,
+			ns_imgui::begin_child5,
+			ns_imgui::begin_child6,
+			ns_imgui::begin_child7,
+			ns_imgui::begin_child8
+		);
+		M(imgui, end_child);
+		imgui["set_window_pos"] = sol::overload(
+			ns_imgui::set_window_pos1,
+			ns_imgui::set_window_pos2
+		);
+		imgui["set_window_size"] = sol::overload(
+			ns_imgui::set_window_size1,
+			ns_imgui::set_window_size2
+		);
+		imgui["set_window_focus"] = sol::overload(
+			ns_imgui::set_window_focus1,
+			ns_imgui::set_window_focus2
+		);
+		imgui["set_window_collapsed"] = sol::overload(
+			ns_imgui::set_window_collapsed1,
+			ns_imgui::set_window_collapsed2,
+			ns_imgui::set_window_collapsed3
+		);
+
+		imgui["set_next_window_pos"] = sol::overload(
+			ns_imgui::set_next_window_pos1,
+			ns_imgui::set_next_window_pos2,
+			ns_imgui::set_next_window_pos3
+		);
+		M(imgui, set_next_window_content_size);
+		imgui["set_next_window_size"] = sol::overload(
+			ns_imgui::set_next_window_size1,
+			ns_imgui::set_next_window_size2
+		);
+		M(imgui, set_next_window_size_constraints);
+		imgui["set_next_window_collapsed"] = sol::overload(
+			ns_imgui::set_next_window_collapsed1,
+			ns_imgui::set_next_window_collapsed2
+		);
+		M(imgui, set_next_window_focus);
+		M(imgui, set_next_window_bg_alpha);
+
+		// Cursor / Layout
+		M(imgui, begin_group);
+		M(imgui, end_group);
+		M(imgui, separator);
+		imgui["same_line"] = sol::overload(
+			ns_imgui::same_line1,
+			ns_imgui::same_line2,
+			ns_imgui::same_line3
+		);
+		M(imgui, spacing);
+		M(imgui, dummy);
+		imgui["indent"] = sol::overload(
+			ns_imgui::indent1,
+			ns_imgui::indent2
+		);
+		imgui["unident"] = sol::overload(
+			ns_imgui::unident1,
+			ns_imgui::unident2
+		);
+		M(imgui, get_cursor_pos);
+		M(imgui, get_cursor_screen_pos);
+
+		// Widgets
+		M(imgui, text);
+		M(imgui, text_colored);
+		M(imgui, text_disabled);
+		M(imgui, text_wrapped);
+		M(imgui, label_text);
+		M(imgui, bullet);
+		M(imgui, bullet_text);
+		imgui["button"] = sol::overload(
+			ns_imgui::button1,
+			ns_imgui::button1
+		);
+		imgui["color_button"] = sol::overload(
+			ns_imgui::color_button1,
+			ns_imgui::color_button2,
+			ns_imgui::color_button3
+		);
+		M(imgui, small_button);
+		imgui["collapsing_header"] = sol::overload(
+			ns_imgui::collapsing_header1,
+			ns_imgui::collapsing_header2,
+			ns_imgui::collapsing_header3
+		);
+		M(imgui, checkbox);
+		imgui["radio_button"] = sol::overload(
+			ns_imgui::radio_button1,
+			ns_imgui::radio_button2
+		);
+		imgui["combo"] = sol::overload(
+			ns_imgui::combo1,
+			ns_imgui::combo2
+		);
+		// Menus
+		M(imgui, begin_main_menu_bar);
+		M(imgui, end_main_menu_bar);
+		M(imgui, begin_menu_bar);
+		M(imgui, end_menu_bar);
+		imgui["begin_menu"] = sol::overload(
+			ns_imgui::begin_menu1,
+			ns_imgui::begin_menu2
+		);
+		M(imgui, end_menu);
+		imgui["menu_item"] = sol::overload(
+			ns_imgui::menu_item1,
+			ns_imgui::menu_item2,
+			ns_imgui::menu_item3,
+			ns_imgui::menu_item4,
+			ns_imgui::menu_item5,
+			ns_imgui::menu_item6
+		);
+		N(lua_state, imgui);
+
+		auto log = lua_state.create_table();
+		M(log, enable_log_file);
+		N(lua_state, log);
 
 		refresh_scripts();
 		load_script(get_script_id("autorun.lua"));
@@ -559,4 +886,28 @@ namespace lua {
 
 		return pathes.at(id).string();
 	}
+
+	void c_lua_hookManager::registerHook(std::string eventName, int scriptId, sol::protected_function func) {
+		c_lua_hook hk = { scriptId, func };
+
+		this->hooks[eventName].push_back(hk);
+	}
+
+	void c_lua_hookManager::unregisterHooks(int scriptId) {
+		for (auto& ev : this->hooks) {
+			int pos = 0;
+
+			for (auto& hk : ev.second) {
+				if (hk.scriptId == scriptId)
+					ev.second.erase(ev.second.begin() + pos);
+
+				pos++;
+			}
+		}
+	}
+
+	std::vector<c_lua_hook> c_lua_hookManager::getHooks(std::string eventName) {
+		return this->hooks[eventName];
+	}
+
 };

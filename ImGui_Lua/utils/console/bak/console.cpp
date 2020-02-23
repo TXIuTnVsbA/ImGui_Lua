@@ -1,5 +1,4 @@
 #include "console.h"
-#include "../../config/config.h"
 #define TIME_SIZE 10
 //#define TIME_FORMAT "%I:%M:%S"
 #define TIME_FORMAT "%T"
@@ -27,6 +26,17 @@ bool c_console::allocate(const char* window_name) {
 		//return false;
 	//}
 
+	allocate();
+
+	if (!SetConsoleTitleA(window_name)) {
+		_RPTF1(_CRT_WARN, "Failed to set console title. Error code: %i", GetLastError());
+		return false;
+	}
+	return true;
+}
+
+bool c_console::allocate() {
+#ifdef _DEBUG
 	/*
 	freopen("CONOUT$", "w", stdout);
 	freopen("CONIN$", "r", stdin);
@@ -54,11 +64,10 @@ bool c_console::allocate(const char* window_name) {
 		_RPTF1(_CRT_ERROR, "Failed to open stderr filestream. Error code: %i", err_res);
 		return false;
 	}
-
-	if (!SetConsoleTitleA(window_name)) {
-		_RPTF1(_CRT_WARN, "Failed to set console title. Error code: %i", GetLastError());
-		return false;
-	}
+	
+#else
+	setbuf(stdout, out_buf);
+#endif
 	return true;
 }
 
@@ -103,15 +112,7 @@ void c_console::log(const char* fmt, ...) {
 }
 
 void c_console::enable_log_file(std::string filename) {
-	auto _path = g_config.get_path();
-	_path /= "Log";
-	auto path = _path / filename;
-	if (!std::filesystem::is_directory(_path)) {
-		std::filesystem::remove(_path);
-		std::filesystem::create_directory(_path);
-	}
-	
-	logFile.open(path.c_str());
+	logFile.open(filename.c_str());
 	if (logFile.is_open())
 		FileLog = true;
 }
