@@ -515,63 +515,6 @@ namespace lua {
 			return ImGui::DragFloat(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str(),power);
 		}
 		
-		bool drag_float_2_1(std::string label, std::string field_from_config) {
-			return ImGui::DragFloat2(label.c_str(), &(GET_FLOAT[field_from_config]));
-		}
-		bool drag_float_2_2(std::string label, std::string field_from_config, float v_speed) {
-			return ImGui::DragFloat2(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed);
-		}
-		bool drag_float_2_3(std::string label, std::string field_from_config, float v_speed, float v_min) {
-			return ImGui::DragFloat2(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min);
-		}
-		bool drag_float_2_4(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max) {
-			return ImGui::DragFloat2(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max);
-		}
-		bool drag_float_2_5(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max, std::string format) {
-			return ImGui::DragFloat2(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str());
-		}
-		bool drag_float_2_6(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max, std::string format, float power) {
-			return ImGui::DragFloat2(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str(), power);
-		}
-
-		bool drag_float_3_1(std::string label, std::string field_from_config) {
-			return ImGui::DragFloat3(label.c_str(), &(GET_FLOAT[field_from_config]));
-		}
-		bool drag_float_3_2(std::string label, std::string field_from_config, float v_speed) {
-			return ImGui::DragFloat3(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed);
-		}
-		bool drag_float_3_3(std::string label, std::string field_from_config, float v_speed, float v_min) {
-			return ImGui::DragFloat3(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min);
-		}
-		bool drag_float_3_4(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max) {
-			return ImGui::DragFloat3(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max);
-		}
-		bool drag_float_3_5(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max, std::string format) {
-			return ImGui::DragFloat3(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str());
-		}
-		bool drag_float_3_6(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max, std::string format, float power) {
-			return ImGui::DragFloat3(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str(), power);
-		}
-
-		bool drag_float_4_1(std::string label, std::string field_from_config) {
-			return ImGui::DragFloat4(label.c_str(), &(GET_FLOAT[field_from_config]));
-		}
-		bool drag_float_4_2(std::string label, std::string field_from_config, float v_speed) {
-			return ImGui::DragFloat4(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed);
-		}
-		bool drag_float_4_3(std::string label, std::string field_from_config, float v_speed, float v_min) {
-			return ImGui::DragFloat4(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min);
-		}
-		bool drag_float_4_4(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max) {
-			return ImGui::DragFloat4(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max);
-		}
-		bool drag_float_4_5(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max, std::string format) {
-			return ImGui::DragFloat4(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str());
-		}
-		bool drag_float_4_6(std::string label, std::string field_from_config, float v_speed, float v_min, float v_max, std::string format, float power) {
-			return ImGui::DragFloat4(label.c_str(), &(GET_FLOAT[field_from_config]), v_speed, v_min, v_max, format.c_str(), power);
-		}
-
 		bool drag_int_1(std::string label, std::string field_from_config) {
 			return ImGui::DragInt(label.c_str(),&(GET_INT[field_from_config]));
 		}
@@ -586,54 +529,6 @@ namespace lua {
 		}
 		bool drag_int_5(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max, std::string format) {
 			return ImGui::DragInt(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max,format.c_str());
-		}
-		
-		bool drag_int_2_1(std::string label, std::string field_from_config) {
-			return ImGui::DragInt2(label.c_str(), &(GET_INT[field_from_config]));
-		}
-		bool drag_int_2_2(std::string label, std::string field_from_config, float v_speed) {
-			return ImGui::DragInt2(label.c_str(), &(GET_INT[field_from_config]), v_speed);
-		}
-		bool drag_int_2_3(std::string label, std::string field_from_config, float v_speed, int v_min) {
-			return ImGui::DragInt2(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min);
-		}
-		bool drag_int_2_4(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max) {
-			return ImGui::DragInt2(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max);
-		}
-		bool drag_int_2_5(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max, std::string format) {
-			return ImGui::DragInt2(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max, format.c_str());
-		}
-
-		bool drag_int_3_1(std::string label, std::string field_from_config) {
-			return ImGui::DragInt3(label.c_str(), &(GET_INT[field_from_config]));
-		}
-		bool drag_int_3_2(std::string label, std::string field_from_config, float v_speed) {
-			return ImGui::DragInt3(label.c_str(), &(GET_INT[field_from_config]), v_speed);
-		}
-		bool drag_int_3_3(std::string label, std::string field_from_config, float v_speed, int v_min) {
-			return ImGui::DragInt3(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min);
-		}
-		bool drag_int_3_4(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max) {
-			return ImGui::DragInt3(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max);
-		}
-		bool drag_int_3_5(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max, std::string format) {
-			return ImGui::DragInt3(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max, format.c_str());
-		}
-
-		bool drag_int_4_1(std::string label, std::string field_from_config) {
-			return ImGui::DragInt4(label.c_str(), &(GET_INT[field_from_config]));
-		}
-		bool drag_int_4_2(std::string label, std::string field_from_config, float v_speed) {
-			return ImGui::DragInt4(label.c_str(), &(GET_INT[field_from_config]), v_speed);
-		}
-		bool drag_int_4_3(std::string label, std::string field_from_config, float v_speed, int v_min) {
-			return ImGui::DragInt4(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min);
-		}
-		bool drag_int_4_4(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max) {
-			return ImGui::DragInt4(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max);
-		}
-		bool drag_int_4_5(std::string label, std::string field_from_config, float v_speed, int v_min, int v_max, std::string format) {
-			return ImGui::DragInt4(label.c_str(), &(GET_INT[field_from_config]), v_speed, v_min, v_max, format.c_str());
 		}
 		
 		// Widgets: Input with Keyboard
@@ -664,6 +559,27 @@ namespace lua {
 
 			return ret;
 		}
+		bool input_text_multiline1(std::string label, std::string field_from_config) {
+			static char buf[512] = {};
+			bool ret = ImGui::InputTextMultiline(label.c_str(), buf, IM_ARRAYSIZE(buf));
+			if (ret)
+				GET_STRING[field_from_config] = std::string(buf);
+			return ret;
+		}
+		bool input_text_multiline2(std::string label, std::string field_from_config,float x,float y) {
+			static char buf[512] = {};
+			bool ret = ImGui::InputTextMultiline(label.c_str(), buf, IM_ARRAYSIZE(buf),ImVec2(x,y));
+			if (ret)
+				GET_STRING[field_from_config] = std::string(buf);
+			return ret;
+		}
+		bool input_text_multiline3(std::string label, std::string field_from_config, float x, float y,int flags) {
+			static char buf[512] = {};
+			bool ret = ImGui::InputTextMultiline(label.c_str(), buf, IM_ARRAYSIZE(buf), ImVec2(x, y),flags);
+			if (ret)
+				GET_STRING[field_from_config] = std::string(buf);
+			return ret;
+		}
 		bool input_float1(std::string label, std::string field_from_config) {
 			return ImGui::InputFloat(label.c_str(), &(GET_FLOAT[field_from_config]));
 		}
@@ -679,8 +595,80 @@ namespace lua {
 		bool input_float5(std::string label, std::string field_from_config, float step, float step_fast, std::string format, int flags) {
 			return ImGui::InputFloat(label.c_str(), &(GET_FLOAT[field_from_config]), step, step_fast, format.c_str(), flags);
 		}
+		bool input_int1(std::string label, std::string field_from_config) {
+			return ImGui::InputInt(label.c_str(), &(GET_INT[field_from_config]));
+		}
+		bool input_int2(std::string label, std::string field_from_config,int step) {
+			return ImGui::InputInt(label.c_str(), &(GET_INT[field_from_config]),step);
+		}
+		bool input_int3(std::string label, std::string field_from_config, int step,int step_fast) {
+			return ImGui::InputInt(label.c_str(), &(GET_INT[field_from_config]), step,step_fast);
+		}
+		bool input_int4(std::string label, std::string field_from_config, int step, int step_fast,int flags) {
+			return ImGui::InputInt(label.c_str(), &(GET_INT[field_from_config]), step, step_fast, flags);
+		}
+		
 		// Widgets: Sliders
+		bool slider_float1(std::string label, std::string field_from_config,float v_min, float v_max) {
+			return ImGui::SliderFloat(label.c_str(), &(GET_FLOAT[field_from_config]), v_min, v_max);
+		}
+		bool slider_float2(std::string label, std::string field_from_config, float v_min, float v_max, std::string format) {
+			return ImGui::SliderFloat(label.c_str(), &(GET_FLOAT[field_from_config]), v_min, v_max, format.c_str());
+		}
+		bool slider_float3(std::string label, std::string field_from_config, float v_min, float v_max,std::string format,float power) {
+			return ImGui::SliderFloat(label.c_str(), &(GET_FLOAT[field_from_config]), v_min, v_max,format.c_str(),power);
+		}
+		
+		bool slider_angle1(std::string label, std::string field_from_config) {
+			return ImGui::SliderAngle(label.c_str(), &(GET_FLOAT[field_from_config]));
+		}
+		bool slider_angle2(std::string label, std::string field_from_config,float v_d_min) {
+			return ImGui::SliderAngle(label.c_str(), &(GET_FLOAT[field_from_config]),v_d_min);
+		}
+		bool slider_angle3(std::string label, std::string field_from_config, float v_d_min,float v_d_max) {
+			return ImGui::SliderAngle(label.c_str(), &(GET_FLOAT[field_from_config]), v_d_min, v_d_max);
+		}
+		bool slider_angle4(std::string label, std::string field_from_config, float v_d_min, float v_d_max,std::string format) {
+			return ImGui::SliderAngle(label.c_str(), &(GET_FLOAT[field_from_config]), v_d_min, v_d_max, format.c_str());
+		}
+		
+		bool slider_int1(std::string label, std::string field_from_config, int v_min, int v_max) {
+			return ImGui::SliderInt(label.c_str(), &(GET_INT[field_from_config]), v_min, v_max);
+		}
+		bool slider_int2(std::string label, std::string field_from_config, int v_min, int v_max, std::string format) {
+			return ImGui::SliderInt(label.c_str(), &(GET_INT[field_from_config]), v_min, v_max,format.c_str());
+		}
+		
+		bool v_slider_float1(std::string label, std::string field_from_config,float x,float y, float v_min, float v_max) {
+			return ImGui::VSliderFloat(label.c_str(), ImVec2(x, y),&(GET_FLOAT[field_from_config]),v_min,v_max);
+		}
+		bool v_slider_float2(std::string label, std::string field_from_config, float x, float y, float v_min, float v_max,std::string format) {
+			return ImGui::VSliderFloat(label.c_str(), ImVec2(x, y), &(GET_FLOAT[field_from_config]), v_min, v_max, format.c_str());
+		}
+		bool v_slider_float3(std::string label, std::string field_from_config, float x, float y, float v_min, float v_max, std::string format,float power) {
+			return ImGui::VSliderFloat(label.c_str(), ImVec2(x, y), &(GET_FLOAT[field_from_config]), v_min, v_max, format.c_str(),power);
+		}
+		bool v_slider_int1(std::string label, std::string field_from_config, float x, float y, int v_min, int v_max) {
+			return ImGui::VSliderInt(label.c_str(), ImVec2(x, y), &(GET_INT[field_from_config]), v_min, v_max);
+		}
+		bool v_slider_int2(std::string label, std::string field_from_config, float x, float y, int v_min, int v_max, std::string format) {
+			return ImGui::VSliderInt(label.c_str(), ImVec2(x, y), &(GET_INT[field_from_config]), v_min, v_max, format.c_str());
+		}
+		
 		// ID scopes
+		void push_id1(int id) {
+			ImGui::PushID(id);
+		}
+		void push_id2(std::string id) {
+			ImGui::PushID(id.c_str());
+		}
+		void push_id3(std::string id_begin, std::string id_end) {
+			ImGui::PushID(id_begin.c_str(), id_end.c_str());
+		}
+		void pop_id() {
+			ImGui::PopID();
+		}
+		// Other
 	};
 
 	void test() {
@@ -898,31 +886,6 @@ namespace lua {
 			ns_imgui::drag_float_5,
 			ns_imgui::drag_float_6
 		);
-		imgui["drag_float_2"] = sol::overload(
-			ns_imgui::drag_float_2_1,
-			ns_imgui::drag_float_2_2,
-			ns_imgui::drag_float_2_3,
-			ns_imgui::drag_float_2_4,
-			ns_imgui::drag_float_2_5,
-			ns_imgui::drag_float_2_6
-		);
-		imgui["drag_float_3"] = sol::overload(
-			ns_imgui::drag_float_3_1,
-			ns_imgui::drag_float_3_2,
-			ns_imgui::drag_float_3_3,
-			ns_imgui::drag_float_3_4,
-			ns_imgui::drag_float_3_5,
-			ns_imgui::drag_float_3_6
-		);
-		imgui["drag_float_4"] = sol::overload(
-			ns_imgui::drag_float_4_1,
-			ns_imgui::drag_float_4_2,
-			ns_imgui::drag_float_4_3,
-			ns_imgui::drag_float_4_4,
-			ns_imgui::drag_float_4_5,
-			ns_imgui::drag_float_4_6
-		);
-
 		imgui["drag_int"] = sol::overload(
 			ns_imgui::drag_int_1,
 			ns_imgui::drag_int_2,
@@ -930,31 +893,15 @@ namespace lua {
 			ns_imgui::drag_int_4,
 			ns_imgui::drag_int_5
 		);
-		imgui["drag_int_2"] = sol::overload(
-			ns_imgui::drag_int_2_1,
-			ns_imgui::drag_int_2_2,
-			ns_imgui::drag_int_2_3,
-			ns_imgui::drag_int_2_4,
-			ns_imgui::drag_int_2_5
-		);
-		imgui["drag_int_3"] = sol::overload(
-			ns_imgui::drag_int_3_1,
-			ns_imgui::drag_int_3_2,
-			ns_imgui::drag_int_3_3,
-			ns_imgui::drag_int_3_4,
-			ns_imgui::drag_int_3_5
-		);
-		imgui["drag_int_4"] = sol::overload(
-			ns_imgui::drag_int_4_1,
-			ns_imgui::drag_int_4_2,
-			ns_imgui::drag_int_4_3,
-			ns_imgui::drag_int_4_4,
-			ns_imgui::drag_int_4_5
-		);
 		// Widgets: Input with Keyboard
 		imgui["input_text"] = sol::overload(
 			ns_imgui::input_text1,
 			ns_imgui::input_text2
+		);
+		imgui["input_text_multiline"] = sol::overload(
+			ns_imgui::input_text_multiline1,
+			ns_imgui::input_text_multiline2,
+			ns_imgui::input_text_multiline3
 		);
 		imgui["input_float"] = sol::overload(
 			ns_imgui::input_float1,
@@ -963,8 +910,44 @@ namespace lua {
 			ns_imgui::input_float4,
 			ns_imgui::input_float5
 		);
+		imgui["input_int"] = sol::overload(
+			ns_imgui::input_int1,
+			ns_imgui::input_int2,
+			ns_imgui::input_int3,
+			ns_imgui::input_int4
+		);
 		// Widgets: Sliders
+		imgui["slider_float"] = sol::overload(
+			ns_imgui::slider_float1,
+			ns_imgui::slider_float2,
+			ns_imgui::slider_float3
+		);
+		imgui["slider_angle"] = sol::overload(
+			ns_imgui::slider_angle1,
+			ns_imgui::slider_angle2,
+			ns_imgui::slider_angle3,
+			ns_imgui::slider_angle4
+		);
+		imgui["slider_int"] = sol::overload(
+			ns_imgui::slider_int1,
+			ns_imgui::slider_int2
+		);
+		imgui["v_slider_float"] = sol::overload(
+			ns_imgui::v_slider_float1,
+			ns_imgui::v_slider_float2,
+			ns_imgui::v_slider_float3
+		);
+		imgui["v_slider_int"] = sol::overload(
+			ns_imgui::v_slider_int1,
+			ns_imgui::v_slider_int2
+		);
 		// ID scopes
+		imgui["push_id"] = sol::overload(
+			ns_imgui::push_id1,
+			ns_imgui::push_id2,
+			ns_imgui::push_id3
+		);
+		M(imgui, pop_id);
 		N(lua_state, imgui);
 
 		auto log = lua_state.create_table();

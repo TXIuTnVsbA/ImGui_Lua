@@ -84,16 +84,20 @@ client.set_event_callback("on_draw", function()
 	end
 	if(imgui.collapsing_header("Demo2")) then
 		imgui.drag_float("drag_float1","drag_float1")
-		imgui.drag_float_2("drag_float2","drag_float2")
-		imgui.drag_float_3("drag_float3","drag_float3")
-		imgui.drag_float_4("drag_float4","drag_float4")
 		imgui.drag_int("drag_int1","drag_int1")
-		imgui.drag_int_2("drag_int2","drag_int2")
-		imgui.drag_int_3("drag_int3","drag_int3")
-		imgui.drag_int_4("drag_int4","drag_int4")
+		
 	end
 	if(imgui.collapsing_header("Demo3")) then
-		
+		imgui.input_text("input_text1","input_text1",true)
+		imgui.input_text("input_text2","input_text2",true,32)
+		imgui.input_text_multiline("input_text_multiline1","input_text_multiline1")
+		imgui.input_float("input_float1","input_float1")
+		imgui.input_int("input_int1","input_int1")
+		imgui.slider_float("slider_float1","slider_float1",1.0,100.0)
+		imgui.slider_angle("slider_angle1","slider_angle1")
+		imgui.slider_int("slider_int1","slider_int1",1,100)
+		imgui.v_slider_float("v_slider_float1","v_slider_float1",30,100,1,100)
+		imgui.v_slider_int("v_slider_int1","v_slider_int1",30,100,1,100)
 	end
 	imgui.end_window()
 end)
