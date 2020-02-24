@@ -233,6 +233,14 @@ namespace lua {
 	};
 
 	namespace ns_imgui {
+		//demo
+		void show_demo_window1() {
+			ImGui::ShowDemoWindow();
+		}
+		void show_demo_window2(std::string field_from_config) {
+			ImGui::ShowDemoWindow(&(GET_BOOL[field_from_config]));
+		}
+
 		// window
 		bool begin_window1(std::string name) {
 			return ImGui::Begin(name.c_str());
@@ -413,13 +421,13 @@ namespace lua {
 			return ImGui::SmallButton(lable.c_str());
 		}
 		bool color_button1(std::string desc_id, float x, float y, float z, float w) {
-			ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w));
+			return ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w));
 		}
 		bool color_button2(std::string desc_id, float x, float y, float z, float w, int flag) {
-			ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w), flag);
+			return ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w), flag);
 		}
 		bool color_button3(std::string desc_id, float x, float y, float z, float w, int flag, float x1, float y1) {
-			ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w), flag, ImVec2(x1, y1));
+			return ImGui::ColorButton(desc_id.c_str(), ImVec4(x, y, z, w), flag, ImVec2(x1, y1));
 		}
 		bool collapsing_header1(std::string lable) {
 			return ImGui::CollapsingHeader(lable.c_str());
@@ -568,7 +576,11 @@ namespace lua {
 		N(lua_state, client);
 
 		auto imgui = lua_state.create_table();
-
+		// demo
+		imgui["show_demo_window"] = sol::overload(
+			ns_imgui::show_demo_window1,
+			ns_imgui::show_demo_window2
+		);
 		// window
 		imgui["begin_window"] = sol::overload(
 			ns_imgui::begin_window1,
